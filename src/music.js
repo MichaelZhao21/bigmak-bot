@@ -1,14 +1,14 @@
 const { Message, Guild } = require('discord.js');
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
-const config = require('../files/config.json');
+const config = require('../config.json');
 
 var queue = new Map();
 var serverQueue = null;
 const options = { limit: 10 };
 
 /**
- * Airdrops fruit!
+ * Plays music lol
  * @param {Array<string>} args
  * @param {Message} message
  */
@@ -32,7 +32,7 @@ module.exports = (args, message) => {
             stopSong(message, serverQueue);
             break;
         default:
-            console.error("Huhhhh??? I shouldn't be here lmao");
+            return;
     }
 };
 
@@ -64,8 +64,10 @@ const play = async (args, message) => {
     console.log('Song Search Query: ' + query);
     if (query.startsWith('https://www.youtube.com/watch?v=')) url = query;
     else {
+        const searchMessage = await message.channel.send('Searching for song...')
         const results = await ytsr(query, options);
         console.log(results);
+        searchMessage.delete();
         url = results.items.find((item) => item.type === 'video').link;
     }
 
